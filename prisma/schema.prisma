@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String       @unique
+  password    String       
+  qr_code     String       @unique // kode unik QR user
+  role        String       @default("member") // 'member' atau 'admin'
+  memberships Membership[] // relasi ke tabel Membership
+  checkins    Checkin[]    // relasi ke tabel Checkin
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @default(now())
+  created_by  String?
+  updated_by  String?
+
+}
+
+model Membership {
+  id           Int       @id @default(autoincrement())
+  user_id      Int       @unique
+  start_date   DateTime
+  end_date     DateTime
+  is_active    Boolean   @default(false)
+  user         User      @relation(fields: [user_id], references: [id])
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @default(now())
+  created_by   String?
+  updated_by   String?
+}
+
+model Checkin {
+  id           Int       @id @default(autoincrement())
+  user_id      Int
+  checkin_time DateTime  @default(now())
+  user         User      @relation(fields: [user_id], references: [id])
+  created_at   DateTime  @default(now())
+}
