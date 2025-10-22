@@ -14,13 +14,14 @@ export const userController = {
   },
 
   createUser: async (req, res) => {
-    const { name, email, qr_code, role, password } = req.body;
+    const { name, email, qr_code, role, password, membership } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Ambil waktu WIB
     const nowUtc = new Date();
     const nowWib = new Date(nowUtc.getTime() + 7 * 60 * 60 * 1000);
 
+    // Buat user baru
     const newUser = await userRepository.create({
       name,
       email,
@@ -30,7 +31,23 @@ export const userController = {
       created_at: nowWib,
       updated_at: nowWib,
     });
-    res.status(201).json(newUser);
+
+    // Jika ada membership di body, buat membership untuk user baru
+    let newMembership = null;
+    if (membership && membership.start_date && membership.end_date) {
+      // Import repository secara dinamis agar tidak circular
+      const mod = await import('../membership/membership.repository.js');
+      newMembership = await mod.membershipRepository.create({
+        user_id: newUser.id,
+        start_date: new Date(membership.start_date),
+        end_date: new Date(membership.end_date),
+        is_active: true,
+        created_at: nowWib,
+        updated_at: nowWib,
+      });
+    }
+
+    res.status(201).json({ user: newUser, membership: newMembership });
   },
 
   updateUser: async (req, res) => {
