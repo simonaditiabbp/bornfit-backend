@@ -23,4 +23,10 @@ export const checkinRepository = {
       orderBy: { checkin_time: 'desc' },
     });
   },
+    findByUserId: async (user_id) => {
+      return await prisma.checkin.findMany({
+        where: { user_id },
+        orderBy: { checkin_time: 'desc' },
+      });
+    },
 };

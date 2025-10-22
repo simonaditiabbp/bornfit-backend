@@ -1,4 +1,4 @@
-import { membershipRepository } from "./membership.Repository.js";
+import { membershipRepository } from "./membership.repository.js";
 
 export const membershipController = {
   getAll: async (req, res) => {
@@ -19,6 +19,18 @@ export const membershipController = {
       res.status(500).json({ error: err.message });
     }
   },
+
+    // GET membership by userId
+    getByUserId: async (req, res) => {
+      try {
+        const { userId } = req.params;
+        const data = await membershipRepository.findByUserId(Number(userId));
+        if (!data) return res.status(404).json({ message: "Membership not found" });
+        res.json(data);
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    },
 
   create: async (req, res) => {
     try {

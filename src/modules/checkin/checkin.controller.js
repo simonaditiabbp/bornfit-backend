@@ -11,6 +11,17 @@ export const checkinController = {
     }
   },
 
+    // untuk menampilkan riwayat checkin berdasarkan userId
+    getCheckinsByUserId: async (req, res) => {
+      try {
+        const { userId } = req.params;
+        const data = await checkinRepository.findByUserId(Number(userId));
+        res.json(data);
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+    },
+
   // untuk proses checkin via QR code
   createCheckin: async (req, res) => {
     try {
@@ -19,7 +30,7 @@ export const checkinController = {
       // cari user berdasarkan qr code
       const user = await checkinRepository.findUserByQrCode(qr_code);
       if (!user) {
-        return res.status(404).json({ message: 'User tidak ditemukan' });
+        return res.status(404).json({ message: 'Member tidak ditemukan' });
       }
 
       // cari membership user
