@@ -5,7 +5,7 @@ export const authenticateJWT = (req, res, next) => {
   if (!token) return res.status(401).json({ message: 'Token tidak ditemukan' });
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: 'Token tidak valid' });
+    if (err) return res.status(401).json({ message: 'Token tidak valid atau telah kedaluwarsa' });
     req.user = user;
     next();
   });
