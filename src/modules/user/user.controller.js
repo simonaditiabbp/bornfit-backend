@@ -21,6 +21,12 @@ export const userController = {
     const nowUtc = new Date();
     const nowWib = new Date(nowUtc.getTime() + 7 * 60 * 60 * 1000);
 
+    // Handle photo jika ada
+    let photoPath = null;
+    if (req.file) {
+      photoPath = `/uploads/${req.file.filename}`;
+    }
+
     // Buat user baru
     const newUser = await userRepository.create({
       name,
@@ -28,6 +34,7 @@ export const userController = {
       qr_code,
       role,
       password: hashedPassword,
+      photo: photoPath,
       created_at: nowWib,
       updated_at: nowWib,
     });
@@ -47,7 +54,7 @@ export const userController = {
       });
     }
 
-    res.status(201).json({ user: newUser, membership: newMembership });
+  res.status(201).json({ user: newUser, membership: newMembership });
   },
 
   updateUser: async (req, res) => {
@@ -65,10 +72,17 @@ export const userController = {
       const nowUtc = new Date();
       const nowWib = new Date(nowUtc.getTime() + 7 * 60 * 60 * 1000);
 
+      // Handle photo jika ada
+      let photoPath = existing.photo;
+      if (req.file) {
+        photoPath = `/uploads/${req.file.filename}`;
+      }
+
       const updated = await userRepository.update(id, {
         name,
         email,
         role,
+        photo: photoPath,
         updated_at: nowWib,
       });
 

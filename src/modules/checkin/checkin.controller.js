@@ -51,8 +51,6 @@ export const checkinController = {
           .json({ message: 'Membership sudah tidak aktif atau expired' });
       }
 
-      // simpan checkin baru dengan waktu WIB
-
       // set created_at manual ke WIB
       const checkin = await checkinRepository.create({
         user_id: user.id,
@@ -60,9 +58,17 @@ export const checkinController = {
         created_at: nowWib,
       });
 
+      const { password, ...userDetail } = user;
       res.status(201).json({
         message: `Check-in berhasil untuk ${user.name} pada ${nowUtc.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}`,
-        data: checkin,
+        data: {
+          ...checkin,
+          user: {
+            ...userDetail,
+            photo: userDetail.photo || null,
+            membership: membership,
+          }
+        }
       });
     } catch (error) {
       res.status(500).json({ message: error.message });

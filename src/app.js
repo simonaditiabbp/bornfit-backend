@@ -5,8 +5,13 @@ import routes from './routes/index.js';
 
 dotenv.config();
 
+
 const app = express();
 app.use(express.json());
+
+// Serve static files from uploads folder
+import path from 'path';
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 app.use(cors({
   origin: 'http://localhost:3000', // atau pakai '*' untuk semua origin

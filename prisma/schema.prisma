@@ -20,7 +20,7 @@ model User {
   updated_at  DateTime     @default(now())
   created_by  String?
   updated_by  String?
-
+  photo       String?    // path atau url file foto user
 }
 
 model Membership {
