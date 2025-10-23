@@ -25,7 +25,7 @@ export const checkinController = {
   // untuk proses checkin via QR code
   createCheckin: async (req, res) => {
     try {
-      const { qr_code } = req.body;
+  const { qr_code, latitude, longitude } = req.body;
 
       // cari user berdasarkan qr code
       const user = await checkinRepository.findUserByQrCode(qr_code);
@@ -45,10 +45,13 @@ export const checkinController = {
       const nowWib = new Date(nowUtc.getTime() + 7 * 60 * 60 * 1000);
       const endDate = new Date(membership.end_date);
 
-      if (membership.is_active === false || endDate < nowUtc) {
+      const endDateAsUtc = new Date(endDate.getTime() - 7 * 60 * 60 * 1000);
+
+      if (membership.is_active === false || endDateAsUtc  < nowUtc) {
         return res
           .status(400)
           .json({ message: 'Membership sudah tidak aktif atau expired' });
+          // .json({ message: 'Membership sudah tidak aktif atau expired - ' + nowUtc.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }) });
       }
 
       // set created_at manual ke WIB
@@ -56,8 +59,11 @@ export const checkinController = {
         user_id: user.id,
         checkin_time: nowWib,
         created_at: nowWib,
+        latitude: latitude ?? null,
+        longitude: longitude ?? null,
       });
 
+      // Ambil detail user (tanpa password)
       const { password, ...userDetail } = user;
       res.status(201).json({
         message: `Check-in berhasil untuk ${user.name} pada ${nowUtc.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}`,
@@ -67,7 +73,9 @@ export const checkinController = {
             ...userDetail,
             photo: userDetail.photo || null,
             membership: membership,
-          }
+          },
+          latitude: checkin.latitude,
+          longitude: checkin.longitude,
         }
       });
     } catch (error) {

@@ -55,7 +55,10 @@ export const membershipController = {
         const start = new Date(start_date);
         const end = new Date(end_date);
 
-        if (start <= today && end >= today) {
+        const startDateAsUtc = new Date(start.getTime() - 7 * 60 * 60 * 1000);
+        const endDateAsUtc = new Date(end.getTime() - 7 * 60 * 60 * 1000);
+
+        if (startDateAsUtc <= today && endDateAsUtc >= today) {
           is_active = true;
         }
       }
@@ -92,7 +95,10 @@ export const membershipController = {
         const start = new Date(start_date);
         const end = new Date(end_date);
 
-        if (start <= today && end >= today) {
+        const startDateAsUtc = new Date(start.getTime() - 7 * 60 * 60 * 1000);
+        const endDateAsUtc = new Date(end.getTime() - 7 * 60 * 60 * 1000);
+
+        if (startDateAsUtc <= today && endDateAsUtc >= today) {
             is_active = true;
         }
         }
