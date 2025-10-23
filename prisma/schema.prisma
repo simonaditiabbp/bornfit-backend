@@ -21,6 +21,8 @@ model User {
   created_by  String?
   updated_by  String?
   photo       String?    // path atau url file foto user
+  latitude    Float?
+  longitude   Float?
 }
 
 model Membership {
