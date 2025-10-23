@@ -8,6 +8,8 @@ const router = express.Router();
 router.get('/', authenticateJWT, authorizeAdmin, userController.getAllUsers);
 router.get('/:id', authenticateJWT, authorizeAdmin, userController.getUserById);
 router.post('/', authenticateJWT, authorizeAdmin, uploadPhoto.single('photo'), userController.createUser);
+
 router.put('/:id', authenticateJWT, authorizeAdmin, uploadPhoto.single('photo'), userController.updateUser);
+router.delete('/:id', authenticateJWT, authorizeAdmin, userController.deleteUser);
 
 export default router;

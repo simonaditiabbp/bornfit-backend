@@ -13,10 +13,18 @@ export const userRepository = {
     return await prisma.user.create({ data });
   },
 
+
   update: async (id, data) => {
     return await prisma.user.update({
       where: { id: Number(id) },
       data,
+    });
+  },
+
+  delete: async (id) => {
+    return await prisma.user.update({
+      where: { id: Number(id) },
+      data: { is_deleted: true },
     });
   },
 

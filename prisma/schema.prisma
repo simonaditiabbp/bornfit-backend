@@ -23,6 +23,7 @@ model User {
   photo       String?    // path atau url file foto user
   latitude    Float?
   longitude   Float?
+  is_deleted  Boolean   @default(false)
 }
 
 model Membership {
